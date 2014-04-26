@@ -15,10 +15,21 @@
 
 @implementation OneViewController
 
-
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    id<UIViewControllerTransitionCoordinator> tc = self.transitionCoordinator;
+    if (tc && [tc initiallyInteractive]) {
+        [tc notifyWhenInteractionEndsUsingBlock:
+         ^(id<UIViewControllerTransitionCoordinatorContext> context) {
+             if ([context isCancelled]) {
+                 NSLog(@"%@", @"Cancelled");
+             } else {
+                 [self.navigationController setNavigationBarHidden:YES animated:NO];
+             }
+         }];
+    } else {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+    }
 }
 
 - (IBAction)nextClick:(id)sender {

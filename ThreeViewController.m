@@ -21,8 +21,8 @@
     self.title = @"Three Title";
 }
 
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 

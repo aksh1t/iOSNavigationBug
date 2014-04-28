@@ -15,39 +15,25 @@
 
 @implementation OneViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-        self.navigationController.interactivePopGestureRecognizer.delegate = self;
-    }
-    
-    // Do any additional setup after loading the view from its nib.
-}
-
 -(void)viewWillAppear:(BOOL)animated{
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [super viewWillAppear:animated];
+    id<UIViewControllerTransitionCoordinator> tc = self.transitionCoordinator;
+    if (tc && [tc initiallyInteractive]) {
+        [tc notifyWhenInteractionEndsUsingBlock:
+         ^(id<UIViewControllerTransitionCoordinatorContext> context) {
+             if ([context isCancelled]) {
+                 NSLog(@"%@", @"Cancelled");
+             } else {
+                 [self.navigationController setNavigationBarHidden:YES animated:NO];
+             }
+         }];
+    } else {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+    }
 }
 
 - (IBAction)nextClick:(id)sender {
-    TwoViewController *tvc = [[TwoViewController alloc]initWithNibName:@"TwoViewController" bundle:nil];
+    TwoViewController *tvc = [TwoViewController new];
     [self.navigationController pushViewController:tvc animated:YES];
 }
 
